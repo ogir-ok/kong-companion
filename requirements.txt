@@ -1,0 +1,4 @@
+aiohttp==2.2.5
+aiohttp_autoreload==0.0.1
+aiodocker==0.8.2
+pyyaml==3.12

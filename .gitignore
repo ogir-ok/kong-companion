@@ -1,0 +1,47 @@
+# IDEs
+.project
+.pydevproject
+.idea
+.vscode
+.settings
+
+# Random files
+*~
+\#*
+
+virtualenv/
+htmlcov/
+static_dist/
+
+# Python compiled byte code
+*.pyc
+
+# SQLite3 database
+*.sqlite
+
+# Node modules
+node_modules/
+yarn.lock
+npm-debug.log
+
+# Coverage
+coverage/
+.coverage
+.cache
+coverage.xml
+prospector.xml
+pytest.xml
+eslint.log
+mochatest.xml
+tests.html
+
+# static validation files
+# .eslintrc
+.sass-lint.yml
+.prospector.yml
+.coveragerc
+
+# in case we run shippable tests don't include it
+shippable/
+
+**/__pycache__
