@@ -4,7 +4,7 @@ import yaml
 def load_config():
     loaded = {}
     try:
-        with open('config.yml') as f:
+        with open('/config.yml') as f:
             loaded = yaml.load(f)
     except (IOError, OSError):
         pass

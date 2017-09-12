@@ -49,7 +49,7 @@ class KongApi:
 
         async with KongClient() as kc:
             async with kc.apis.url(self.id).delete() as resp:
-                return await resp.json()
+                return await resp.text()
 
     def to_dict(self):
         return {
@@ -68,17 +68,17 @@ async def get_apis_from_container(container):
     name = container['Names'][0].replace('/', '')
     labels = container['Labels']
 
-    if name and ('kong.uris' in labels or 'kong.hosts' in labels):
-        uris = labels.get('kong.uris')
-        hosts = labels.get('kong.hosts')
-        port = labels.get('kong.port', '80')
+    uris = labels.get('kong.uris')
+    hosts = labels.get('kong.hosts')
+    port = labels.get('kong.port', '80')
 
-        upstream = 'http://{}:{}/'.format(name, port)
+    upstream = 'http://{}:{}/'.format(name, port)
 
-        if uris:
-            apis.append(KongApi(name, uris=uris, upstream_url=upstream))
-        if hosts:
-            apis.append(KongApi(name + '_uri', hosts=hosts, upstream_url=upstream))
+    if uris:
+        apis.append(KongApi(name, uris=uris, upstream_url=upstream))
+
+    if hosts:
+        apis.append(KongApi(name + '_uri', hosts=hosts, upstream_url=upstream))
 
     return apis
 

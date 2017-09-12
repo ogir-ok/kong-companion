@@ -1,3 +1,4 @@
+import json
 import asyncio
 from aiohttp import web
 
@@ -25,6 +26,6 @@ async def index(request):
     for checker, status in results:
         res[checker] = status
 
-    return web.json_response(data=res)
+    return web.Response(text=json.dumps(res, indent=2))
 
 

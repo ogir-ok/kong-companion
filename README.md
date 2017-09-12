@@ -66,7 +66,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config.yml:/web/config.yml
+      - ./config.yml:/config.yml
     labels:
       kong.uris: /companion/ # all calls to /companion will be routed to this containers
       kong.hosts: companion.atomcream.com # all calls with host companion.atomcream.com will be routed here too
@@ -83,4 +83,5 @@ networks:
     external:
       name: kong-local
 ```
+
 
