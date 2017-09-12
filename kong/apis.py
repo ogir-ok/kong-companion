@@ -76,7 +76,7 @@ async def get_apis_from_container(container):
         if uris:
             apis.append(KongApi(name, uris=uris, upstream_url=upstream))
         if hosts:
-            apis.append(KongApi(name + '_uri', uris=uris, upstream_url=upstream))
+            apis.append(KongApi(name + '_uri', hosts=hosts, upstream_url=upstream))
 
     return apis
 
