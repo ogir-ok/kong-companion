@@ -7,12 +7,13 @@ class KongApi:
     Kong's api object
     """
 
-    def __init__(self, name, uris=None, hosts=None, upstream_url=None, id=None, **kwa):
+    def __init__(self, name, uris=None, hosts=None, upstream_url=None, id=None, preserve_host=True, **kwa):
         self.id = id
         self.name = name
         self.uris = uris
         self.hosts = hosts
         self.upstream_url = upstream_url
+        self.preserve_host = preserve_host
 
     def __str__(self):
         return '<{} -> {}>'.format(self.uris if self.uris else self.hosts, self.upstream_url)
@@ -34,7 +35,8 @@ class KongApi:
             'name': self.name,
             'upstream_url': self.upstream_url,
             'hosts': self.hosts,
-            'uris': self.uris
+            'uris': self.uris,
+            'preserve_host': self.preserve_host
         }
 
         with KongClient() as kc:
