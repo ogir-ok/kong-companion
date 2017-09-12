@@ -24,12 +24,13 @@ class KongClient:
 
         return self.url(item)
 
-    def __enter__(self, *a, **kwa):
-        self._session = aiohttp.ClientSession(*a, **kwa)
+    async def __aenter__(self, *a, **kwa):
+        self._session = aiohttp.ClientSession()
+        self._session = await self._session.__aenter__(*a, **kwa)
         return self
 
-    def __exit__(self, *a, **kwa):
-        self._session.close()
+    async def __aexit__(self, *a, **kwa):
+        await self._session.__aexit__(*a, **kwa)
 
     def _url(self):
         return '/'.join(self._path)

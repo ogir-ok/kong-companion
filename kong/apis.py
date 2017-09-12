@@ -39,17 +39,17 @@ class KongApi:
             'preserve_host': self.preserve_host
         }
 
-        with KongClient() as kc:
-            resp = await kc.apis.post(json=data)
-            return await resp.json()
+        async with KongClient() as kc:
+            async with kc.apis.post(json=data) as resp:
+                return await resp.json()
 
     async def unregister(self):
         if not self.id:
             raise ValueError('can not unregister api without id')
 
-        with KongClient() as kc:
-            resp = await kc.apis.url(self.id).delete()
-            return await resp.json()
+        async with KongClient() as kc:
+            async with kc.apis.url(self.id).delete() as resp:
+                return await resp.json()
 
     def to_dict(self):
         return {
@@ -96,6 +96,8 @@ async def get_apis_from_docker():
     for c in containers:
         apis.extend(await get_apis_from_container(c._container))
 
+    await docker.close()
+
     return apis
 
 
@@ -105,9 +107,9 @@ async def get_current_apis():
     """
     apis = []
 
-    with KongClient() as kc:
-        resp = await kc.apis.get()
-        registered = await resp.json()
+    async with KongClient() as kc:
+        async with kc.apis.get() as resp:
+            registered = await resp.json()
         for api in registered['data']:
             apis.append(KongApi(**api))
 

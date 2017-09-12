@@ -36,10 +36,10 @@ class Acting(Checker):
 
     async def perform_check(self, *args, **kwargs):
         try:
-            with KongClient() as kc:
-                resp = await kc.plugins.get()
-                if resp.status == 200:
-                    return True
+            async with KongClient() as kc:
+                async with kc.plugins.get() as resp:
+                    if resp.status == 200:
+                        return True
         except aiohttp.client_exceptions.ClientConnectorError:
             return False
         return False
@@ -48,13 +48,14 @@ class Acting(Checker):
 class Plugins(Checker):
 
     async def perform_check(self, *args, **kwargs):
-        with KongClient() as kc:
-            resp = await kc.plugins.get()
-            installed_plugins = await resp.json()
+        async with KongClient() as kc:
+            async with kc.plugins.get() as resp:
+                installed_plugins = await resp.json()
 
             plugins = config.get('plugins', [])
             for plugin in plugins:
-                await kc.plugins.post(json=plugin)
+                async with kc.plugins.post(json=plugin) as resp:
+                    await resp.json()
 
             return installed_plugins
         return False
@@ -63,12 +64,13 @@ class Plugins(Checker):
 class Consumers(Checker):
 
     async def perform_check(self, *args, **kwargs):
-        with KongClient() as kc:
+        async with KongClient() as kc:
             consumers = config.get('consumers', [])
             for consumer in consumers:
-                resp = await kc.consumers.url(consumer['id']).get()
-                if resp.status == 404:
-                    await kc.consumers.post(json=consumer)
+                async with kc.consumers.url(consumer['id']).get() as resp:
+                    if resp.status == 404:
+                        async with kc.consumers.post(json=consumer) as created:
+                            await created.json()
             return consumers
         return False
 
@@ -76,9 +78,9 @@ class Consumers(Checker):
 class Apis(Checker):
 
     async def perform_check(self, *args, **kwargs):
-        with KongClient() as kc:
-            resp = await kc.apis.get()
-            installed_apis = await resp.json()
+        async with KongClient() as kc:
+            async with kc.apis.get() as resp:
+                installed_apis = await resp.json()
             installed_apis = [KongApi(**api) for api in installed_apis['data']]
             config_apis = [KongApi(**api) for api in config.get('apis', [])]
             docker_apis = await get_apis_from_docker()
